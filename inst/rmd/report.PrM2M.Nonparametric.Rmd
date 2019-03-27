@@ -1,0 +1,21 @@
+---
+title: "PrM2M.Nonparametric"
+author: "William Stockhausen"
+output: pdf_document
+---
+
+```{r setupPrM2M.Nonparametric, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+  zBs<-params$configInfo$zBs;
+  n0<-params$m2mResults$m2mInfo$params$n0;
+  z0<-format(zBs[n0+1],justify="right");
+  n1<-params$m2mResults$m2mInfo$params$n1;
+  z1<-format(zBs[length(zBs)-n1],justify="right");
+  vals<-paste(format(params$m2mResults$m2mInfo$params$vals,digits=3,justify="right"),collapse=", ");
+```
+
+  parameter | value
+  ----------|--------------------
+  $z_0$  | `r z0`
+  $z_1$  | `r z1`
+  values  | `r vals`

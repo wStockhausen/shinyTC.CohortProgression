@@ -1,0 +1,210 @@
+---
+title: "Tanner Crab Cohort Progression"
+author: "William Stockhausen"
+date: '`r format(Sys.Date(),"%d %B, %Y")`'
+params:
+  configInfo: NA
+  nmResults: NA
+  mltResults: NA
+  grwResults: NA
+  m2mResults: NA
+  recResults: NA
+  cpResults: NA
+output: 
+    pdf_document: 
+        toc: TRUE
+        fig_width: 6.5
+        fig_height: 4.0
+        fig_crop: FALSE
+        fig_caption: TRUE
+        includes:
+          in_header: NA
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, concordance=TRUE, fig.width=6.5, dpi=300)
+```
+
+# Tanner crab cohort progression
+
+This report characterizes, based on population processes for an unfished stock as incorporated in the assessment model, the progression of a single-sex cohort of Tanner crab through a succession of years. The progression takes the initial size distribution of immature, new shell crab at recruitment to the assessment model and projects it forward in time on an annual basis, applying size- and life stage-specific model processes for natural mortality, annual molting, growth, terminal molt, and changes in shell condition to the relative abundance of crab by maturity state (*m*), shell condition (*s*), and size (*z*). Plots describing all model processes and the resulting cohort progression are included in the associated sections in this report.
+
+##Model configuration
+
+The cohort progression model was run using the following general configuration:
+
+```{r modelConfig,results="asis"}
+  cat("\t\t\tmolt timing (fraction of year):",paste0(params$configInfo$moltTime,collapse=", "),"\n");
+  cat("\t\t\tmaturity states               :",paste0(params$configInfo$maturityStates,collapse=", "),"\n");
+  cat("\t\t\tshell conditions              :",paste0(params$configInfo$shellConditions,collapse=", "),"\n");
+  cat("\t\t\tbin size (mm CW)              :",params$configInfo$binZ,"\n")
+  cat("\t\t\tmin size (mm CW)              :",params$configInfo$minZ,"\n")
+  cat("\t\t\tmax size (mm CW)              :",params$configInfo$maxZ,"\n")
+```
+
+##Recruitment
+Annual recruitment to the model may be spread across several size bins and may reflect several age classes. All recruitment occurs as immature, new shell crab. Here, recruits to the model in a given year are regarded as a "cohort". A truncated gamma probability distribution, $\gamma_N(z|\alpha,\beta)$, is used to describe the relative abundance of recruiting crab. $\gamma_N(z_i|\alpha,\beta)$ is typically truncated after a few size bins and the resulting distribution is normalized to sum to 1: 
+
+  $$\gamma_N(z_i|\alpha,\beta) = \frac{\gamma(z_i|\alpha,\beta)} {\sum_{i}{\gamma(z_i|\alpha,\beta)}}$$
+  
+where $z_i$ is the mid-point of the *i*th size bin, $\alpha$ is the location parameter for the gamma distribution, $\beta$ is the scale parameter, and the sum in the denominator is over the non-truncated size bins.
+
+The following parameters were used to describe the relative size distribution at recruitment for this report:
+
+  parameter | value
+  ----------|------
+  $\alpha$  | `r params$recResults$recInfo$params$alpha`
+  $\beta$   | `r params$recResults$recInfo$params$beta`
+  max size (mm CW) | `r params$recResults$recInfo$params$mxZ`
+  
+yielding the distribution shown in Figure 1.
+  
+```{r Recruitment, echo=FALSE, results='asis'}
+  print(params$recResults$plotPrRecAtZ);
+  cat("\nFigure 1. Relative size distribution for recruitment to the cohort progression model.\n")
+```
+\FloatBarrier
+
+\clearpage
+
+##Natural mortality rates
+Natural mortality (*M*)in the cohort progression model is assumed to be a function of maturity state, such that immature and mature crab may experience different rates of natural mortality (but these rates do not depend on shell condition). These are parameterized using the folllowing multiplicative approach:
+
+$$M_{m,s} = \delta M_m * M_0$$
+
+where $M_0$ is a baseline value for *M* and $\delta M_m$ is the maturity state-specific multiplier.
+
+The following parameters were used to describe *M* for this report:
+
+  parameter | value
+  ----------|------
+  $M_0$                 | `r params$nmResults$nmInfo$params$pM`
+  $\delta M_{immature}$ | `r params$nmResults$nmInfo$params$pDM1`
+  $\delta M_{mature}$   | `r params$nmResults$nmInfo$params$pDM2`
+  
+yielding the rates shown in Figure 2.
+
+```{r NaturalMortality, echo=FALSE,results="asis"}
+  print(params$nmResults$plotNM);
+  cat("\nFigure 2. Natural mortality rates by life stage.\n")
+```
+\FloatBarrier
+
+\clearpage
+
+##Molting
+Immature crab in the assessment model are (currently) assumed to molt annually until their terminal molt to maturity. In order to explore the implications of skip molting on cohort progression, the cohort progression model incorporates the ability to specify a size-dependent probbility of molting for immature crab. Crab that don't molt are classified as "old shell" during the following year based on the appearance of their carapace, while crab that do molt are classified as "new shell". The probability that immature crab will undergo a molt, $p^M_{m,s}(z)$, is allowed to be a decreasing logistic function of size (but independent of age) given by:
+
+$$p^M_{i,n}(z_j) = 1 \quad \text{where} \quad z_j < z_{min}$$
+
+$$p^M_{i,n}(z_j) = 1 - \frac {1-p_{min}} {1+e^{(z_j-z_{50})/b_{50}}} \quad \text{where} \quad z_j \ge z_{min}$$
+
+$$p^M_{i,o}(z_j) = 1$$
+
+where *i* indicates "immature", *n* indicates "new shell", *o* indicates "old shell", $z_j$ is the midpoint of the *j*th size bin, $p_{min}$ is the minimum probability of large, immature new shell crab molting, $z_{50}$ is the inflection point of the logistic curve, $b_{50}$ is the scale of the logistic curve, and $z_min$ is the minimum size that immature crab potentially undergo skip molting. The values used for the parameters in this report are:
+
+  parameter | value
+  ----------|------
+  $z_{min}$  | `r params$mltResults$moltInfo$params$z1`
+  $p_{min}$  | `r params$mltResults$moltInfo$params$min`
+  $z_{50}$   | `r params$mltResults$moltInfo$params$z50`
+  $b_{50}$   | `r params$mltResults$moltInfo$params$b50`
+  
+
+The resulting size-dependent probability of annual molt is shown in Figure 3.
+
+```{r AnnualMolt, echo=FALSE, results="asis"}
+  print(params$mltResults$plotPrMolt);
+  cat("\nFigure 3. The probability of undergoing an annual molt, by pre-molt size, for immature new shell crab.\n")
+```
+\FloatBarrier
+
+\clearpage
+
+##Growth
+Mean post-molt size $\overline{z}_{pst}$ is modeled as a power function of pre-molt size $z_{pre}$, paramterized as:
+
+$$\overline{z}_{pst} = z^A_{pst}\cdot exp\{\frac{log(\overline{z}^B_{pst}/\overline{z}^A_{pst})} {log(z^B_{pre}/z^A_{pre})} \cdot log(z_{pre}/z^A_{pre})\}$$
+
+where $z^A_{pst}$ is the estimated mean post-molt size at pre-molt size $z^A_{pre}$ and $z^B_{pst}$ is the estimated mean post-molt size at pre-molt size $z^B_{pre}$. The actual post-molt size $z_{pst}$ for a crab, given that it was in size bin $z_i$ prior to molting, is described using a $\gamma$ distribution, with the probability that the post-molt crab falls into the *j*th size bin $z_j$ given by:
+
+$$p(z_j|z_i)=\int_{\alpha_i(z_j)-\frac{\delta \alpha}{2}}^{\alpha_i(z_j)+\frac{\delta \alpha}{2}}\gamma(\alpha-\overline{\alpha_i}) \cdot d\alpha$$
+
+where $\alpha_i(z)=\frac{z-z_i}{\beta}$ represents the scaled molt increment, $\overline{\alpha_i}=\frac{\overline{z}_{pst}-z_i}{\beta}$ is the scaled mean molt increment for pre-molt size bin $z_i$, $\delta \alpha = \frac{\delta z}{\beta}$ is the scaled size bin width, and $\beta$ is the scale factor. The largest model size bin, $z_{max}$, functions as an accumulator bin, so it is handled slightly differently: the probability of a post-molt crab ending up in the largest size bin is simply the probability of it ending up at any larger size than its lower cutpoint:
+
+$$p(z_{max}|z_i)=\int_{\alpha_i(z_{max})-\frac{\delta \alpha}{2}}^{\inf}\gamma(\alpha-\overline{\alpha_i}) \cdot d\alpha = 1-\int_{0}^{\alpha_i(z_{max})-\frac{\delta \alpha}{2}}\gamma(\alpha-\overline{\alpha_i}) \cdot d\alpha$$
+
+The model also allows one to limit potential growth to a maximum number of size bins, $n_{max}$, in which case $p(z_j|z_i)$ is set to 0 for $j-i > n_{max}$ and normalized to sum to 1 for $j-i \le n_{max}$.
+
+The values for the parameters used in this report are given in the following table:
+
+  parameter | value
+  ----------|------
+  $\overline{z}^A_{pst}$  | `r params$grwResults$growthInfo$params$pA`
+  $z^A_{pre}$             | `r params$grwResults$growthInfo$params$zA`
+  $\overline{z}^B_{pst}$  | `r params$grwResults$growthInfo$params$pB`
+  $z^B_{pre}$             | `r params$grwResults$growthInfo$params$zB`
+  $\beta$                 | `r params$grwResults$growthInfo$params$zB`
+  $n_{max}$               | `r params$grwResults$growthInfo$params$maxZBEx`
+  
+The resulting growth probabilities are illustrated in Figure 4.
+
+
+```{r Growth, echo=FALSE,results="asis"}
+  print(params$grwResults$plotPrG);
+  cat("\nFigure 4. The pre-molt size-dependent probability of annual growth, given that an immature crab molted.\n")
+```
+\FloatBarrier
+
+\clearpage
+
+##Terminal molt
+
+The probability that a molt is the terminal molt to maturity, $p^T(z)$ is parameterized in the assessment model on the logit scale as a nonparameteric, smooth function of pre-molt size. Inidividual parameters are estimated on the logit scale for each size bin, with likelihood penalties applied to the second order differences to impose a smoothness constraint on the resulting shape of the function. In addition, the first size bin at which terminal molt *can* occur ($p^T(z_0)>0$)and the first size bin at which it *must* occur ($p^T(z_1) \equiv 1$) can be set to reduce the number of logit-scale parameters that must be estimated. In the interest of simplicity, it is also possible here to use a logistic function parameterized by size at the inflection point ($z_{50}$) and scale ($b_{50}$).
+
+For this report, the `r ifelse(params$m2mResults$m2mInfo$params$parametric,"parametric","nonparametric")` approach was used. The values for the parameters are given in the following table:
+
+```{r nonparametricM2M;, child='report.PrM2M.Nonparametric.Rmd', eval = !params$m2mResults$m2mInfo$params$parametric}
+```
+
+```{r parametricM2M;, child='report.PrM2M.Parametric.Rmd', eval = params$m2mResults$m2mInfo$params$parametric}
+```
+
+The resulting terminal molt probabilities are illustrated in Figure 5.
+
+
+```{r TerminalMolt, echo=FALSE, results='asis'}
+  print(params$m2mResults$plotPrM2M);
+  cat("\nFigure 5. The pre-molt size-dependent probability, given that it molted, that an immature crab underwent its terminal molt to maturity.\n")
+  figno<-6;
+```
+\FloatBarrier
+
+\clearpage
+
+##Cohort progression
+The progression of a cohort through subsequent years following recruitment to the assessment model based on the population processes described previously is illustrated in the remaining figures. `r np<-length(params$cpResults$pltCPA); ifelse(np==1,paste0("Figure ",figno," documents"),paste0("Figures ",figno,"-",figno+np-1," document"))` the progression of the cohort on an absolute scale through time while `r ifelse(np==1,paste0("Figure ",figno+1," documents"),paste0("Figures ",figno+np-1,"-",figno+2*np-1," document"))` the progression of the cohort on a normalized scale (such that the relative abundance in a year sums to 1 across all life stages and all sizes).
+
+###Abundance
+
+```{r CohortProgressionA, echo=FALSE,results="asis",fig.height=6}
+  for (cap in names(params$cpResults$pltCPA)) {
+    plt<-params$cpResults$pltCPA[[cap]];
+    print(plt);
+    cat(gsub("&&figno",figno,cap,fixed=TRUE));
+    figno <- figno+1;
+  }
+```
+
+###Normalized size compositions
+
+```{r CohortProgressionN, echo=FALSE,results='asis',fig.height=6}
+  for (cap in names(params$cpResults$pltCPN)) {
+    plt<-params$cpResults$pltCPN[[cap]];
+    print(plt);
+    cat(gsub("&&figno",figno,cap,fixed=TRUE));
+    figno <- figno+1;
+  }
+```
+

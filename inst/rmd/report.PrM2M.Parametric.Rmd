@@ -1,0 +1,18 @@
+---
+title: "PrM2M.Parametric"
+author: "William Stockhausen"
+output: pdf_document
+---
+
+```{r setupPrM2M.Parametric, include=FALSE}
+  knitr::opts_chunk$set(echo = TRUE)
+  z0<-params$m2mResults$m2mInfo$params$z0;
+  z50<-params$m2mResults$m2mInfo$params$z50;
+  b50<-params$m2mResults$m2mInfo$params$b50;
+```
+
+  parameter | value
+  ----------|------
+  $z_0$  | `r z0`
+  $z_50$  | `r z50`
+  $b_50$  | `b z50`
