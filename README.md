@@ -28,10 +28,10 @@ as well as the following packages available from https://github.com/wStockhausen
 ## Run the app
 To launch the app, run 
 ```r
-  shinyTC.CohortProgression::launchApp()
+  shiny::runAPp(shinyTC.CohortProgression::launchApp())
 ```
   
-from the commandline in R (or RStudio).
+from the commandline in R (or RStudio). Default values are for males from the 2018 assessment model.
 
 ## Tanner crab cohort progression
 

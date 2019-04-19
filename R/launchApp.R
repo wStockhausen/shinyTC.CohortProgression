@@ -1,11 +1,14 @@
 #'
-#' @title Launch the shinyTC_CohortProgression app
+#' @title Get the shinyTC_CohortProgression app to run it
 #'
-#' @description Function to launch the shinyTC_CohortProgression app.
+#' @description Function to get the shinyTC_CohortProgression app to run it.
 #'
-#' @return shiny application object
+#' @return shiny application object (which is run using shiny::runApp(obj,...))
 #'
-#' @example \dontrun {launchApp()}
+#' @details To run the app from the commandline or in an RStudio session, use
+#'shiny::runApp(shinyTC.CohortProgression::launchApp())
+#'
+#' @example \dontrun {shiny::runApp(shinyTC.CohortProgression::launchApp())}
 #'
 #' @import shiny
 #'

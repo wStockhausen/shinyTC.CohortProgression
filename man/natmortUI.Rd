@@ -16,5 +16,6 @@ A Shiny tabPanel allowing the user to change natural mortality parameters and pl
 Function to create the UI for the Shiny Tanner crab natural mortality module.
 }
 \details{
-Allows the user to change natural mortality parameters and plot the reults for the Tanner crab model.
+Allows the user to change natural mortality parameters and plot the reults for the Tanner crab model. Default
+parameter values are from males from the 2018 assessment model.
 }

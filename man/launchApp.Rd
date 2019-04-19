@@ -2,13 +2,17 @@
 % Please edit documentation in R/launchApp.R
 \name{launchApp}
 \alias{launchApp}
-\title{Launch the shinyTC_CohortProgression app}
+\title{Get the shinyTC_CohortProgression app to run it}
 \usage{
 launchApp()
 }
 \value{
-shiny application object
+shiny application object (which is run using shiny::runApp(obj,...))
 }
 \description{
-Function to launch the shinyTC_CohortProgression app.
+Function to get the shinyTC_CohortProgression app to run it.
+}
+\details{
+To run the app from the commandline or in an RStudio session, use
+shiny::runApp(shinyTC.CohortProgression::launchApp())
 }

@@ -7,7 +7,8 @@
 #'
 #' @return A Shiny tabPanel allowing the user to change natural mortality parameters and plot the results.
 #'
-#' @details Allows the user to change natural mortality parameters and plot the reults for the Tanner crab model.
+#' @details Allows the user to change natural mortality parameters and plot the reults for the Tanner crab model. Default
+#' parameter values are from males from the 2018 assessment model.
 #'
 #' @import shiny
 #'
@@ -33,7 +34,7 @@ natmortUI<-function(id){
               wellPanel(
                 fluidRow(textInput(ns("pM"),"pM: base rate for M",value="0.23")),
                 fluidRow(textInput(ns("pDM1"),"pDM1: immature crab multiplier",value="1.00238960095")),
-                fluidRow(textInput(ns("pDM2"),"pDM2:   mature crab multiplier",value="2.58717218215"))
+                fluidRow(textInput(ns("pDM2"),"pDM2:   mature crab multiplier",value="1.15247833771"))
               ) #wellPanel
             ), #parameters tabPanel
             tabPanel(
