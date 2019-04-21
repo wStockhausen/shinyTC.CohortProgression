@@ -36,10 +36,12 @@ Returns a list with elements:<cr>
  <li> params - a list with input parameter values </li>
  <li> n_ymsz - an array with the cohort progression </li>
  <li> mdfrN_ymsz - a dataframe wtih the cohort progression </li>
- <li> n_ymsz - an array with the cohort progression </li>
- <li> mdfrN_ymsz - a dataframe wtih the cohort progression </li>
  <li> p_ymsz - an array with the normalized cohort progression </li>
  <li> mdfrP_ymsz - a dataframe wtih the normalized cohort progression </li>
+ <li> n_msz - an array with the equilibrium size distribution </li>
+ <li> mdfrN_msz - a dataframe wtih the equilibrium size distribution </li>
+ <li> p_msz - an array with the normalized equilibrium size distribution </li>
+ <li> mdfrP_msz - a dataframe wtih the normalized equilibrium size distribution </li>
 </ul>
 
 The \code{input} list must have the following elements:<cr>

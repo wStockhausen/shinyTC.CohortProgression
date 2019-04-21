@@ -11,7 +11,8 @@
 #' @return reactive object which returns a list with elements
 #' <ul>
 #'   <li> cpInfo -  a list with elements inpInfo, prR_z, and mdfrPrRecAtZ (see \code{\link{calcCohortProgression}})</li>
-#'   <li> pltPrRecAtZ - a ggplot2 object
+#'   <li> pltCPA - a ggplot2 object
+#'   <li> pltCPN - a ggplot2 object
 #' </ul>
 #'
 #'
@@ -33,21 +34,6 @@ cohortServer<-function(input,
   observe(
     {
       cat(file=stderr(),"--cohortServer: observer()\n")
-      # cat(file=stderr(),"cohortServer: class(input)      =",class(input),"\n")
-      # cat(file=stderr(),"cohortServer: names(input)      =",names(input),"\n")
-      # cat(file=stderr(),"cohortServer: class(output)     =",class(output),"\n")
-      # cat(file=stderr(),"cohortServer: names(output)     =",names(output),"\n")
-      # cat(file=stderr(),"cohortServer: class(configInfo)   =",class(configInfo),"\n")
-      # cat(file=stderr(),"cohortServer: names(configInfo()) =",names(configInfo()),"\n")
-      # cat(file=stderr(),"cohortServer: class(mltResults)   =",class(mltResults),"\n")
-      # cat(file=stderr(),"cohortServer: names(mltResults()) =",names(mltResults()$moltInfo),"\n")
-      # cat(file=stderr(),"cohortServer: class(grwResults)   =",class(grwResults),"\n")
-      # cat(file=stderr(),"cohortServer: names(grwResults()) =",names(grwResults()),"\n")
-      # cat(file=stderr(),"cohortServer: class(m2mResults)   =",class(m2mResults),"\n")
-      # cat(file=stderr(),"cohortServer: names(m2mResults()) =",names(m2mResults()),"\n")
-      # cat(file=stderr(),"cohortServer: class(recResults)   =",class(recResults),"\n")
-      # cat(file=stderr(),"cohortServer: names(recResults()) =",names(recResults()),"\n")
-#      cat("cohortServer: class(session)    =",class(session),"\n")
     },
     label="cohortObserver"
   );
@@ -75,7 +61,11 @@ cohortServer<-function(input,
                   n_ymsz    =res$n_ymsz,
                   mdfrN_ymsz=res$mdfrN_ymsz,
                   p_ymsz    =res$p_ymsz,
-                  mdfrP_ymsz=res$mdfrP_ymsz);
+                  mdfrP_ymsz=res$mdfrP_ymsz,
+                  n_msz     =res$n_msz,
+                  mdfrN_msz =res$mdfrN_msz,
+                  p_msz     =res$p_msz,
+                  mdfrP_msz =res$mdfrP_msz);
         cat(file=stderr(),"--finished cohortServer:calcCP()\n")
         return(ret);
       }
@@ -91,68 +81,69 @@ cohortServer<-function(input,
         }
     );
 
-    #save results and plots to RData file when user clicks "Save" button
-    output$save1<-downloadHandler(
-      filename=function(){paste0('results.CohortProgression-',Sys.Date(),'.RData')},
-      content=function(file){
-        cat(file=stderr(),"--Saving results to '",file,"'\n")
-        configInfo  <-isolate(configInfo());
-        nmResults   <-isolate(nmResults());
-        mltResults  <-isolate(mltResults());
-        grwResults  <-isolate(grwResults());
-        m2mResults  <-isolate(m2mResults());
-        recResults  <-isolate(recResults());
-        cpResults   <-list(cpInfo=isolate(cpInfo()),
-                          pltCPA=isolate(plotCPA()),
-                          pltCPN=isolate(plotCPN()));
-        save(configInfo,nmResults,mltResults,
-             grwResults,m2mResults,recResults,cpResults,
-             file=file);
-        cat(file=stderr(),"--Results saved to '",file,"'\n")
-      }
-    );
-
-    #create a pdf report via RMarkdown
-    output$save2<-downloadHandler(
-      filename=function(){paste0('report.CohortProgression-',Sys.Date(),'.pdf')},
-      content=function(file){
-        cat(file=stderr(),"--cohortServer: Creating pdf '",file,"'\n");
-        #copy Rmd files to temporary folder
-        tmpd <- tempdir();
-        tempRep<-file.path(tmpd,"report.CohortProgression.Rmd");
-        file.copy(system.file("rmd/report.CohortProgression.Rmd",package="shinyTC.CohortProgression"),tempRep,overwrite=TRUE);
-        tmp<-file.path(tmpd,"report.PrM2M.Nonparametric.Rmd");
-        file.copy(system.file("rmd/report.PrM2M.Nonparametric.Rmd",package="shinyTC.CohortProgression"),tmp,overwrite=TRUE);
-        tmp<-file.path(tmpd,"report.PrM2M.Parametric.Rmd");
-        file.copy(system.file("rmd/report.PrM2M.Parametric.Rmd",package="shinyTC.CohortProgression"),tmp,overwrite=TRUE);
-        #set up params list to pass to Rmd document
-        params<-list(
-          configInfo = isolate(configInfo()),
-          nmResults  = isolate(nmResults()),
-          mltResults = isolate(mltResults()),
-          grwResults = isolate(grwResults()),
-          m2mResults = isolate(m2mResults()),
-          recResults = isolate(recResults()),
-          cpResults  = list(cpInfo=isolate(cpInfo()),
-                            pltCPA=isolate(plotCPA()),
-                            pltCPN=isolate(plotCPN()))
-        );
-
-        #render file
-        pdf_styles    <-system.file("rmd/StylesForRmdPDFs.sty",package="wtsUtilities")
-        cat(file=stderr(),"--cohortServer: pdf-styles = '",pdf_styles,"'\n");
-        output_options<-list(includes=list(in_header=pdf_styles));
-        res <- rmarkdown::render(tempRep,
-                          output_file=file,
-                          output_options=output_options,
-                          params=params,
-                          envir=new.env(parent=globalenv()),
-                          clean=TRUE);
-
-        cat(file=stderr(),"--cohortServer: Created pdf '",file,"'\n")
-        return(res);
-      }
-    );
+    # #save results and plots to RData file when user clicks "Save" button
+    # output$save1<-downloadHandler(
+    #   filename=function(){paste0('results.CohortProgression-',Sys.Date(),'.RData')},
+    #   content=function(file){
+    #     cat(file=stderr(),"--Saving results to '",file,"'\n")
+    #     configInfo  <-isolate(configInfo());
+    #     nmResults   <-isolate(nmResults());
+    #     mltResults  <-isolate(mltResults());
+    #     grwResults  <-isolate(grwResults());
+    #     m2mResults  <-isolate(m2mResults());
+    #     recResults  <-isolate(recResults());
+    #     cpResults   <-list(cpInfo=isolate(cpInfo()),
+    #                       pltCPA=isolate(plotCPA()),
+    #                       pltCPN=isolate(plotCPN()));
+    #     save(configInfo,nmResults,mltResults,
+    #          grwResults,m2mResults,recResults,cpResults,
+    #          file=file);
+    #     cat(file=stderr(),"--Results saved to '",file,"'\n")
+    #   }
+    # );
+    #
+    # #create a pdf report via RMarkdown
+    # output$save2<-downloadHandler(
+    #   filename=function(){paste0('report.CohortProgression-',Sys.Date(),'.pdf')},
+    #   content=function(file){
+    #     cat(file=stderr(),"--cohortServer: Creating pdf '",file,"'\n");
+    #     #copy Rmd files to temporary folder
+    #     tmpd <- tempdir();
+    #     tempRep<-file.path(tmpd,"report.CohortProgression.Rmd");
+    #     file.copy(system.file("rmd/report.CohortProgression.Rmd",package="shinyTC.CohortProgression"),tempRep,overwrite=TRUE);
+    #     tmp<-file.path(tmpd,"report.PrM2M.Nonparametric.Rmd");
+    #     file.copy(system.file("rmd/report.PrM2M.Nonparametric.Rmd",package="shinyTC.CohortProgression"),tmp,overwrite=TRUE);
+    #     tmp<-file.path(tmpd,"report.PrM2M.Parametric.Rmd");
+    #     file.copy(system.file("rmd/report.PrM2M.Parametric.Rmd",package="shinyTC.CohortProgression"),tmp,overwrite=TRUE);
+    #     #set up params list to pass to Rmd document
+    #     params<-list(
+    #       configInfo = isolate(configInfo()),
+    #       nmResults  = isolate(nmResults()),
+    #       mltResults = isolate(mltResults()),
+    #       grwResults = isolate(grwResults()),
+    #       m2mResults = isolate(m2mResults()),
+    #       recResults = isolate(recResults()),
+    #       cpResults  = list(cpInfo=isolate(cpInfo()),
+    #                         pltCPA=isolate(plotCPA()),
+    #                         pltCPN=isolate(plotCPN())),
+    #       eqzResults = isolate(eqzResults())
+    #     );
+    #
+    #     #render file
+    #     pdf_styles    <-system.file("rmd/StylesForRmdPDFs.sty",package="wtsUtilities")
+    #     cat(file=stderr(),"--cohortServer: pdf-styles = '",pdf_styles,"'\n");
+    #     output_options<-list(includes=list(in_header=pdf_styles));
+    #     res <- rmarkdown::render(tempRep,
+    #                       output_file=file,
+    #                       output_options=output_options,
+    #                       params=params,
+    #                       envir=new.env(parent=globalenv()),
+    #                       clean=TRUE);
+    #
+    #     cat(file=stderr(),"--cohortServer: Created pdf '",file,"'\n")
+    #     return(res);
+    #   }
+    # );
 
     #create list of ggplot objects for cohort abundance progression
     plotCPA<-reactive(
@@ -170,7 +161,7 @@ cohortServer<-function(input,
           showPlot=FALSE,
           verbose=TRUE
         );
-        for (i in length(p)) {
+        for (i in 1:length(p)) {
           names(p)[i]<-"\n  \nFigure &&figno. Absolute scale size comps showing cohort progression.  \n  \n"
         }
         cat(file=stderr(),"Finished cohortServer:plotCPA()\n");
@@ -194,7 +185,9 @@ cohortServer<-function(input,
           showPlot=FALSE,
           verbose=TRUE
         );
-        for (i in length(p)) {
+        cat(file=stderr(),paste0("class(p) = ",class(p),"\n"));
+        cat(file=stderr(),paste0("length(p) = ",length(p),"\n"));
+        for (i in 1:length(p)) {
           p[[i]] <- p[[i]]+ggplot2::ylab("normalized abundance");
           names(p)[i]<-"\n  \nFigure &&figno. Normalized size comps showing cohort progression.  \n  \n"
         }

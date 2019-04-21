@@ -30,7 +30,9 @@ shinyServer<-function(input, output, session) {
     m2mResults<-callModule(m2mServer,"m2m",configInfo=configInfo,session=session);
 
     #reccruitment size distribution
-    recResults<-callModule(recServer,"rec",configInfo=configInfo,session=session);
+    recResults<-callModule(recServer,"rec",
+                           configInfo=configInfo,
+                           session=session);
 
     #cohort progression
     cpResults<-callModule(cohortServer,"cohort",
@@ -40,6 +42,17 @@ shinyServer<-function(input, output, session) {
                           grwResults=grwResults,
                           m2mResults=m2mResults,
                           recResults=recResults,
+                          session=session);
+
+    #equilibrium size distribution
+    eqzResults<-callModule(eqzServer,"eqz",
+                          configInfo=configInfo,
+                          nmResults =nmResults,
+                          mltResults=mltResults,
+                          grwResults=grwResults,
+                          m2mResults=m2mResults,
+                          recResults=recResults,
+                          cpResults=cpResults,
                           session=session);
 
   } #function(input,output,session)

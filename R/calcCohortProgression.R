@@ -19,10 +19,12 @@
 #'  <li> params - a list with input parameter values </li>
 #'  <li> n_ymsz - an array with the cohort progression </li>
 #'  <li> mdfrN_ymsz - a dataframe wtih the cohort progression </li>
-#'  <li> n_ymsz - an array with the cohort progression </li>
-#'  <li> mdfrN_ymsz - a dataframe wtih the cohort progression </li>
 #'  <li> p_ymsz - an array with the normalized cohort progression </li>
 #'  <li> mdfrP_ymsz - a dataframe wtih the normalized cohort progression </li>
+#'  <li> n_msz - an array with the equilibrium size distribution </li>
+#'  <li> mdfrN_msz - a dataframe wtih the equilibrium size distribution </li>
+#'  <li> p_msz - an array with the normalized equilibrium size distribution </li>
+#'  <li> mdfrP_msz - a dataframe wtih the normalized equilibrium size distribution </li>
 #' </ul>
 #'
 #' The \code{input} list must have the following elements:<cr>
@@ -38,6 +40,7 @@ calcCohortProgression<-function(configInfo,
                                 recInfo,
                                 input,
                                 verbose=FALSE){
+  verbose=TRUE;
   #extract dimensions
   cat(file=stderr(),"----starting calcCohortProgression()\n");
   dtM<-configInfo$moltTime;
@@ -69,9 +72,14 @@ calcCohortProgression<-function(configInfo,
   if (verbose) cat(file=stderr(),"----nMs:",nMs,"\n");
   if (verbose) cat(file=stderr(),"----nSs:",nSs,"\n");
   if (verbose) cat(file=stderr(),"----nZs:",nZs,"\n");
+  #define abundance arrays
   n_ymsz <- array(data=0,
                   dim=c(nYs,nMs,nSs,nZs),
-                  dimnames=list(y=0:maxAge,m=mss,s=scs,z=zBs));
+                  dimnames=list(y=0:maxAge,m=mss,s=scs,z=zBs));#cohort progression
+  n_msz <- array(data=0,
+                 dim=c(nMs,nSs,nZs),
+                 dimnames=list(m=mss,s=scs,z=zBs));#equilibrium size distribution
+
   #set recruitment
   n_ymsz["0",1,1,] <- recInfo$prR_z; #all recruits to model are immature, new shell
   if (verbose) cat(file=stderr(),"----created n_ymsz.\n");
@@ -104,12 +112,20 @@ calcCohortProgression<-function(configInfo,
     if (verbose) cat(file=stderr(),"----CP5\n");
   }
 
+  #calculate equilibriium size distribution
+  for (y in as.character(0:maxAge)){
+    for (m in 1:nMs){
+      for (s in 1:nSs) n_msz[m,s,]<-n_msz[m,s,]+n_ymsz[y,m,s,];
+    }
+  }
+
   #calculate normalized size compositions
-  p_ymsz = 0*n_ymsz;
+  p_ymsz <- 0*n_ymsz;
   for (y in as.character(0:maxAge)){
     n <- sum(n_ymsz[y,,,]);#sum over all
     p_ymsz[y,,,]<-n_ymsz[y,,,]/n;
   }
+  p_msz <- n_msz/sum(n_msz);
 
   #convert to melted dataframes
   mdfrN_ymsz<-reshape2::melt(n_ymsz,value.name="val");
@@ -118,12 +134,20 @@ calcCohortProgression<-function(configInfo,
   mdfrP_ymsz<-reshape2::melt(p_ymsz,value.name="val");
   mdfrP_ymsz$case<-"";
   mdfrP_ymsz$x   <-"";
+  mdfrN_msz<-reshape2::melt(n_msz,value.name="val");
+  mdfrN_msz$case<-"";
+  mdfrN_msz$x   <-"";
+  mdfrP_msz<-reshape2::melt(p_msz,value.name="val");
+  mdfrP_msz$case<-"";
+  mdfrP_msz$x   <-"";
 
   if (verbose) cat(file=stderr(),"----finished calcCohortProgression()\n");
   return(list(params=params,
               prR_z=recInfo$prR_z,
               M_ms=M_ms,prM_z=prM_z,prG_zz=prG_zz,prT_z=prT_z,
               n_ymsz=n_ymsz,mdfrN_ymsz=mdfrN_ymsz,
-              p_ymsz=p_ymsz,mdfrP_ymsz=mdfrP_ymsz));
+              p_ymsz=p_ymsz,mdfrP_ymsz=mdfrP_ymsz,
+              n_msz=n_msz,mdfrN_msz=mdfrN_msz,
+              p_msz=p_msz,mdfrP_msz=mdfrP_msz));
 }
 

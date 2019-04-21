@@ -17,6 +17,7 @@ shinyUI<-navbarPage(
     growthUI("growth"),
     m2mUI("m2m"),
     recUI("rec"),
-    cohortUI("cohort")
+    cohortUI("cohort"),
+    eqzUI("eqz")
   )
 

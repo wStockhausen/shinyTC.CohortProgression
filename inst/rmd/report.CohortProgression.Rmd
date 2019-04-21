@@ -10,6 +10,7 @@ params:
   m2mResults: NA
   recResults: NA
   cpResults: NA
+  eqzResults: NA
 output: 
     pdf_document: 
         toc: TRUE
@@ -184,7 +185,7 @@ The resulting terminal molt probabilities are illustrated in Figure 5.
 \clearpage
 
 ##Cohort progression
-The progression of a cohort through subsequent years following recruitment to the assessment model based on the population processes described previously is illustrated in the remaining figures. `r np<-length(params$cpResults$pltCPA); ifelse(np==1,paste0("Figure ",figno," documents"),paste0("Figures ",figno,"-",figno+np-1," document"))` the progression of the cohort on an absolute scale through time while `r ifelse(np==1,paste0("Figure ",figno+1," documents"),paste0("Figures ",figno+np-1,"-",figno+2*np-1," document"))` the progression of the cohort on a normalized scale (such that the relative abundance in a year sums to 1 across all life stages and all sizes).
+The progression of a cohort through subsequent years following recruitment to the assessment model based on the population processes described previously is illustrated in the following figures `r np<-length(params$cpResults$pltCPA); ifelse(np==1,paste0("Figure ",figno," documents"),paste0("Figures ",figno,"-",figno+np-1," document"))` the progression of the cohort on an absolute scale through time while `r ifelse(np==1,paste0("Figure ",figno+1," documents"),paste0("Figures ",figno+np-1,"-",figno+2*np-1," document"))` the progression of the cohort on a normalized scale (such that the relative abundance in a year sums to 1 across all life stages and all sizes).
 
 ###Abundance
 
@@ -208,3 +209,27 @@ The progression of a cohort through subsequent years following recruitment to th
   }
 ```
 
+##Equilibrium size distribution
+The equilibrium size distribution for multiple cohorts at constant recruitment based on the population processes described previously is illustrated in the following figures `r np<-length(params$eqzResults$pltEqZA); ifelse(np==1,paste0("Figure ",figno," documents"),paste0("Figures ",figno,"-",figno+np-1," document"))` the distribution on an absolute scale (relative to the level of constant recruitment) while `r ifelse(np==1,paste0("Figure ",figno+1," documents"),paste0("Figures ",figno+np-1,"-",figno+2*np-1," document"))` the distribution on a normalized scale (such that relative abundance sums to 1 across all life stages and all sizes).
+
+###Abundance
+
+```{r EqZA, echo=FALSE,results="asis",fig.height=6}
+  for (cap in names(params$eqzResults$pltEqZA)) {
+    plt<-params$eqzResults$pltEqZA[[cap]];
+    print(plt);
+    cat(gsub("&&figno",figno,cap,fixed=TRUE));
+    figno <- figno+1;
+  }
+```
+
+###Normalized size compositions
+
+```{r EqZN, echo=FALSE,results='asis',fig.height=6}
+  for (cap in names(params$eqzResults$pltEqZN)) {
+    plt<-params$eqzResults$pltEqZN[[cap]];
+    print(plt);
+    cat(gsub("&&figno",figno,cap,fixed=TRUE));
+    figno <- figno+1;
+  }
+```
