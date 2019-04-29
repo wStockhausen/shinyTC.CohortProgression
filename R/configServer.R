@@ -3,7 +3,9 @@
 #'
 #' @description Server function for the Tanner crab model configuration Shiny module.
 #'
-#' @params the usual input, output, session variables
+#' @param input - usual Shiny input variable
+#' @param output - usual Shiny output variable
+#' @param session - usual Shiny session variable
 #'
 #' @return configInfo - reactive variable yielding list of model configuration info
 #'

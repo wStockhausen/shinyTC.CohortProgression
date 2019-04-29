@@ -6,6 +6,9 @@
 \usage{
 setConfigInfo(input, verbose = FALSE)
 }
+\arguments{
+\item{input}{- list with elements binZ, minZ, maxZ (see \link{ @details })}
+}
 \value{
 list - list with model configuration info (see \link{ @details })
 }

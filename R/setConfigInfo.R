@@ -3,7 +3,7 @@
 #'
 #' @description Function to set the model configuration state.
 #'
-#' @params input -  list with elements binZ, minZ, maxZ (see \link{ @details })
+#' @param input - list with elements binZ, minZ, maxZ (see \link{ @details })
 #'
 #' @return list - list with model configuration info (see \link{ @details })
 #'

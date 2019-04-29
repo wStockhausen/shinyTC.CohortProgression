@@ -6,6 +6,11 @@
 #' @param input - the usual shiny input variable
 #' @param output - the usual shiny output variable
 #' @param configInfo - reactive variable yielding a list with model configuration info
+#' @param nmResults - natural mortality results list
+#' @param mltResults - probability of molt results list
+#' @param grwResults - growth results list
+#' @param m2mResults - molt-to-maturity results list
+#' @param recResults - recruitment results list
 #' @param session - the usual shiny session variable
 #'
 #' @return reactive object which returns a list with elements

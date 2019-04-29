@@ -8,8 +8,6 @@
 #' @details To run the app from the commandline or in an RStudio session, use
 #'shiny::runApp(shinyTC.CohortProgression::launchApp())
 #'
-#' @example \dontrun {shiny::runApp(shinyTC.CohortProgression::launchApp())}
-#'
 #' @import shiny
 #'
 #' @export

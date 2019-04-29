@@ -3,8 +3,10 @@
 #'
 #' @description Server function for the Tanner crab model molt probability Shiny module.
 #'
-#' @params the usual input, output, session variables
+#' @param input - the usual shiny input variable
+#' @param output - the usual shiny output variable
 #' @param configInfo - reactive variable yielding a list with model configuration info
+#' @param session - the usual shiny session variable
 #'
 #' @return reactive object which returns a list with elements
 #' <ul>

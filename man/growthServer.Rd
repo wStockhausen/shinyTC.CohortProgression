@@ -7,7 +7,13 @@
 growthServer(input, output, configInfo, session)
 }
 \arguments{
+\item{input}{- the usual shiny input variable}
+
+\item{output}{- the usual shiny output variable}
+
 \item{configInfo}{- reactive variable yielding a list with model configuration info}
+
+\item{session}{- the usual shiny session variable}
 }
 \value{
 a reactive object which returns a list with elements:<cr>

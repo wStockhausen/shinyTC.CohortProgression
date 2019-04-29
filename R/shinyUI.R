@@ -3,8 +3,6 @@
 #'
 #'@description UI for shiny Cohort Progression app.
 #'
-#'@params none
-#'
 #'@return the html UI for the app
 #'
 #'@details Creates the UI for the app.

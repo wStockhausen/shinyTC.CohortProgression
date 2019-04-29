@@ -35,6 +35,7 @@ plotPop.EquilibriumSizeDist<-function(mdfr,
   p <- ggplot(dfr,mapping=aes_string(x="z",y="val",colour="case"));
   p <- p + geom_line();
   if (!is.null(fg)) p <- p + facet_grid(rows=as.formula(fg),scales=scales);
+  p <- p + lims(y=c(0.0,NA));
   p <- p + labs (x="size (mm CW)",y="equilbrium distribution");
   if (showPlot) print(p);
   if (verbose) cat("Finished plotPop.EquilibriumSizeDist()\n")

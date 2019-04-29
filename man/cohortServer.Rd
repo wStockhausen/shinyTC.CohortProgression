@@ -14,6 +14,16 @@ cohortServer(input, output, configInfo, nmResults, mltResults, grwResults,
 
 \item{configInfo}{- reactive variable yielding a list with model configuration info}
 
+\item{nmResults}{- natural mortality results list}
+
+\item{mltResults}{- probability of molt results list}
+
+\item{grwResults}{- growth results list}
+
+\item{m2mResults}{- molt-to-maturity results list}
+
+\item{recResults}{- recruitment results list}
+
 \item{session}{- the usual shiny session variable}
 }
 \value{

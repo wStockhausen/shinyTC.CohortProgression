@@ -6,6 +6,13 @@
 \usage{
 configServer(input, output, session)
 }
+\arguments{
+\item{input}{- usual Shiny input variable}
+
+\item{output}{- usual Shiny output variable}
+
+\item{session}{- usual Shiny session variable}
+}
 \value{
 configInfo - reactive variable yielding list of model configuration info
 }

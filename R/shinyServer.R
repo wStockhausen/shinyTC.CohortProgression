@@ -3,7 +3,9 @@
 #'
 #'@description Server for the shiny Cohort Progression app.
 #'
-#'@params none
+#' @param input - the usual shiny input variable
+#' @param output - the usual shiny output variable
+#' @param session - the usual shiny session variable
 #'
 #'@return the html UI for the app
 #'

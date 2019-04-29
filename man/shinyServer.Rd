@@ -6,6 +6,13 @@
 \usage{
 shinyServer(input, output, session)
 }
+\arguments{
+\item{input}{- the usual shiny input variable}
+
+\item{output}{- the usual shiny output variable}
+
+\item{session}{- the usual shiny session variable}
+}
 \value{
 the html UI for the app
 }
