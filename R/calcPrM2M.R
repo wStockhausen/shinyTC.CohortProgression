@@ -46,7 +46,7 @@ calcPrM2M<-function(configInfo,input,verbose=FALSE){
     prM2M <- 1.0/(1.0+exp(-lgtSclP));
     z0 <- input$z0;    #size at which prM2M becomes non-zero
     n0 <- sum(zBs<z0); #number of initial size bins at which prM2M is identically 0
-    if (n0>0) prM2[1:n0]<-0; #account for initial zeros
+    if (n0>0) prM2M[1:n0]<-0; #account for initial zeros
     params<-list(parametric=TRUE,z50=z50,b50=b50,z0=z0);
   } else {
     if (verbose) cat(file=stderr(),"Using non-parametric curve\n");

@@ -1,8 +1,8 @@
 Package: shinyTC.CohortProgression
 Type: Package
 Title: Package to simulate a Tanner crab cohort progression using Shiny
-Version: 2019.04.28
-Date: 2019-04-28
+Version: 2020.08.16
+Date: 2020-08-16
 Author: William Stockhausen (NOAA/NMFS/AFSC)
 Maintainer: William Stockhausen <william.stockhausen@noaa.gov>
 Description: Contains functions to simulate a Tanner crab cohort progression using Shiny
